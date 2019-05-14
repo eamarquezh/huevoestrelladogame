@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Game</title>
+
+    <style>
+    @font-face {
+        font-family:'Cave Story';
+        font-style: normal;
+        font-weight: 400;
+        src: url('Cave-Story.ttf') format('truetype');;
+        }
+    html body{
+            font-family:'Cave Story';
+            margin:0;
+            padding:0;
+            border:0;
+        }
+    #canvas{
+            display:block;
+            background-color: rgb(11, 158, 202);
+        }
+    </style>
+</head>
+
+<body>
+        <canvas id="canvas" ></canvas>
+        <audio id="entrada">
+                <source src="gameOver.mp3" type="audio/mpeg">
+                <source src="gameOver.ogg" type="audio/ogg">
+                </audio>
+<script>
+    var intro = document.getElementById("entrada");
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var vy=0;
+    var mesc = 0;
+    var escore=0;
+    var hvivo=0;
+
+    function inicio(){
+        intro.play();
+    }
+    function escribir(contexto,cadena,x,y,fuente,colorea,alineacion){
+        contexto.textAlign = alineacion;
+        contexto.font=fuente;
+        contexto.fillStyle=colorea;
+        contexto.fillText(cadena,x,y);
+    }
+
+    function dib_lineas(contexto,xi,yi,xf,yf,pxlineas,colorea){
+        contexto.beginPath();
+        contexto.moveTo(xi,yi);
+        contexto.lineTo(xf,yf);
+        contexto.lineWidth = pxlineas;
+        contexto.strokeStyle = colorea;
+        contexto.stroke();
+    }
+
+    function canvasSize(){
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        canvas.width = window.innerWidth * window.devicePixelRatio;
+        canvas.height = window.innerHeight * window.devicePixelRatio;
+    }
+
+    function mainDraw(){
+        base = canvas.width;
+        alto = canvas.height;
+        var imagen = new Image();
+        var titulo="ericman";
+        var textprincipal1="El desarrollar un juego es el mayor reto personal";
+        var textprincipal2="que una persona sin importar su profesion pueda tener";
+        var textprincipal3="involucra tener los conocimientos de Developer,";
+        var textprincipal4="database, cinematic sound, marketing, etc..,";
+        var textprincipal5="y aun mas impotante hacer que esta creacion paresca tener vida.";
+       
+
+        function procesaImagen(){
+            
+        
+            if(mesc<100){
+                mesc=mesc+1;
+            } 
+
+
+            ctx.clearRect(0,0,base,alto);
+            escribir(ctx,titulo,base/2,alto/10,String(base/10) + "px Cave Story","#000000","center");
+            escribir(ctx,textprincipal1.substring(0,mesc),base/2,(alto/5)+(0),String(base/25) + "px Cave Story","#000000","center");
+            escribir(ctx,textprincipal2.substring(0,mesc),base/2,(alto/5)+((base/25)*1),String(base/25) + "px Cave Story","#000000","center");
+            escribir(ctx,textprincipal3.substring(0,mesc),base/2,(alto/5)+((base/25)*2),String(base/25) + "px Cave Story","#000000","center");
+            escribir(ctx,textprincipal4.substring(0,mesc),base/2,(alto/5)+((base/25)*3),String(base/25) + "px Cave Story","#000000","center");
+            escribir(ctx,textprincipal5.substring(0,mesc),base/2,(alto/5)+((base/25)*4),String(base/25) + "px Cave Story","#000000","center");
+            
+            escribir(ctx,"Score: "+escore,base/30,alto/30,String(base/30) + "px Cave Story","#000000","left");
+            
+            dib_lineas(ctx,base/30,alto/30,base/30,alto-(alto/30),1,"#FFFFFF");
+            dib_lineas(ctx,base/30,alto/30,base-(base/30),alto/30,1,"#FFFFFF");
+            dib_lineas(ctx,base/30,alto/30,base/30,alto-(alto/30),1,"#FFFFFF");
+            dib_lineas(ctx,base-(base/30),alto-(alto/30),base-(base/30),alto/30,1,"#FFFFFF");
+            dib_lineas(ctx,base/30,alto-(alto/30),base-(base/30),alto-(alto/30),1,"#FFFFFF"); 
+            vy=vy+4;
+
+        
+            if(vy%3==0 & vy<(alto)-(alto/30)-(base/10)){ctx.drawImage(imagen,0,0,200,128,(base/2)-(base/20),vy,base/10,base/10);}
+            if(vy%3==1 & vy<(alto)-(alto/30)-(base/10)){ctx.drawImage(imagen,0,128,200,128,(base/2)-(base/20),vy,base/10,base/10);}
+            if(vy%3==2 & vy<(alto)-(alto/30)-(base/10)){ctx.drawImage(imagen,0,256,200,128,(base/2)-(base/20),vy,base/10,base/10);}	
+            if(vy>=(alto)-(alto/30)-(base/10)){
+                hvivo=1;
+                ctx.drawImage(imagen,0,384,200,128,(base/2)-(base/20),(alto)-(alto/30)-(base/10),base/10,base/10);
+                escribir(ctx,"Tu puntaje es: "+escore,base/2,(alto)-(alto/15)-(base/10),String(base/15) + "px Cave Story","#000000","center");
+            }	
+            imagen.src ="huevo.png";
+
+            canvas.onmousedown = function(e){
+                
+                if(hvivo==0){
+                    escore=escore+1;
+                    vy=vy-20;
+                }
+                
+            }
+            
+
+        }
+        
+        setInterval(procesaImagen,25);
+    }
+
+    window.onload = function(){
+        inicio();
+        canvasSize();
+        mainDraw();
+        
+        window.addEventListener('resize', canvasSize);
+        window.addEventListener('resize', mainDraw);
+        window.addEventListener('resize', inicio);
+        
+    }
+</script>
+</body>
+</html>
